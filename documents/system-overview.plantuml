@@ -1,0 +1,55 @@
+@startuml
+
+legend
+|= Object connection |= Connection type |
+| Solid Line | Wired |
+| Dashed Line | Wireless |
+endlegend
+
+package DroneSystem {
+    object MainFlightController <<Raspberry Pi 3>>
+    object DroneTRx <<Ardunio Uno>>
+    object FlightDynamicsController <<Ardunio Uno>>
+    object IMU <<BNO055>>
+    object PWMDriver <<PCA9685>>
+    object OutputSwitch <<OutputSwitch>>
+    object RCRX <<FrSky X8R>>
+    object GPS <<GPS>>
+
+    MainFlightController --> FlightDynamicsController : USB
+    MainFlightController <-- GPS : IC2
+    MainFlightController <-- DroneTRx : USB
+
+    FlightDynamicsController <-- IMU : IC2
+    FlightDynamicsController --> PWMDriver : IC2
+
+    PWMDriver --> OutputSwitch : 7CH PWM
+    RCRX --> OutputSwitch : 7CH PWM
+    RCRX "ManualOverride" --> OutputSwitch : 1CH BOOL
+
+
+    object Engine <<Servo>>
+    object Rudder <<Servo>>
+    object Elevator <<Servo>>
+    object Ailerons <<Servo>>
+
+    OutputSwitch --> Engine : PWM
+    OutputSwitch --> Rudder : PWM
+    OutputSwitch --> Elevator : PWM
+    OutputSwitch --> Ailerons : PWM
+}
+
+package GroundSystem {
+    object GroundStation <<Laptop>>
+    object RCTX <<FrSky Taranis>>
+    object BaseTRx <<Ardunio Uno>>
+
+    GroundStation <--> BaseTRx : USB
+    
+}
+
+GroundStation <..> MainFlightController : Wifi
+RCTX ..> RCRX : 2.4GHz
+BaseTRx <..> DroneTRx : 433MHz
+
+@enduml
