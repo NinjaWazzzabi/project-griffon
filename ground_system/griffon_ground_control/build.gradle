@@ -1,0 +1,29 @@
+group 'com.projectgriffon.ground_system.griffon_ground_control'
+version '0.0.1-DEV'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+group 'com.projectgriffon.ground_system.griffon_ground_control'
+version '0.0.1-DEV'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compileOnly 'org.projectlombok:lombok:1.16.18'
+}
