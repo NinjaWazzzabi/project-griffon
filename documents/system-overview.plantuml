@@ -40,15 +40,15 @@ package DroneSystem {
 }
 
 package GroundSystem {
-    object GroundStation <<Laptop>>
+    object GriffonGroundControl <<Laptop>>
     object RCTX <<FrSky Taranis>>
     object BaseTRx <<Ardunio Uno>>
 
-    GroundStation <--> BaseTRx : USB
+    GriffonGroundControl <--> BaseTRx : USB
     
 }
 
-GroundStation <..> MainFlightController : Wifi
+GriffonGroundControl <..> MainFlightController : Wifi
 RCTX ..> RCRX : 2.4GHz
 BaseTRx <..> DroneTRx : 433MHz
 
