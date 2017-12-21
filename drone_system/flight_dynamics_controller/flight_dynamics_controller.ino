@@ -28,6 +28,7 @@ PidClass zPid;
 Adafruit_PWMServoDriver servoController = Adafruit_PWMServoDriver();
 Adafruit_BNO055 ahrs = Adafruit_BNO055(55); //Attitude heading reference system
 char serialBuffer[12];
+long lastHostAhrsUpdate;
 
 void setup() 
 {
@@ -49,7 +50,6 @@ void setup()
 	elevatorValue = 0;
 	aileronValue = 0;
 
-	Serial.println("TEST");
 	while (true) {
 		if (ahrs.begin()) {
 			break;
@@ -59,6 +59,8 @@ void setup()
 		}
 	}
 
+	
+	lastHostAhrsUpdate = 0;
 	delay(1000);
 	ahrs.setExtCrystalUse(true);
 	Serial.println("INIT COMPLT");
@@ -73,19 +75,13 @@ void loop()
 		{
 			serialBuffer[i] = Serial.read();
 		}
-		desired.setX(*((float *)serialBuffer[0]));
-		desired.setY(*((float *)serialBuffer[4]));
-		desired.setZ(*((float *)serialBuffer[8]));
+		desired.setX(*((float *) &serialBuffer[0]));
+		desired.setY(*((float *) &serialBuffer[4]));
+		desired.setZ(*((float *) &serialBuffer[8]));
 	}
 
 	//Update the actual 
-
 	imu::Vector<3> vector = ahrs.getVector(Adafruit_BNO055::VECTOR_EULER);
-	//sensors_event_t ahrsEvent;
-	//ahrs.getEvent(&ahrsEvent);
-	//actual.setX(ahrsEvent.orientation.x);
-	//actual.setY(ahrsEvent.orientation.y);
-	//actual.setZ(ahrsEvent.orientation.z);
 
 	actual.setX(vector.x());
 	actual.setY(vector.y());
@@ -113,17 +109,26 @@ void loop()
 	setServoValue(ELEVATOR_CH, elevatorValue);
 	setServoValue(AILERON_CH, aileronValue);
 
-	printFloat(actual.getX());
-	printFloat(actual.getY());
-	printFloat(actual.getZ());
+	if (millis() - lastHostAhrsUpdate > 10) {
+		sendAhrs();
+		lastHostAhrsUpdate = millis();
+	}
+}
 
-	Serial.println("---------------------");
+void sendAhrs() {
+	Serial.print("<");
+	printFloat(actual.getX());
+	Serial.print(",");	
+	printFloat(actual.getY());
+	Serial.print(",");		
+	printFloat(actual.getZ());
+	Serial.print(">");	
 	Serial.flush();
 }
 
 void printFloat(float f) 
 {
-	Serial.println(f,4);
+	Serial.print(f,4);
 }
 
 /*
