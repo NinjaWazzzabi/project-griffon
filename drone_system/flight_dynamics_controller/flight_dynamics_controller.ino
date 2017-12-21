@@ -13,6 +13,9 @@
 #define MAX_SERVO_VALUE 2000
 #define MIN_SERVO_VALUE 1000
 
+#define ASCII_EOT 4
+#define UPDATE_DELAY 10
+
 Vector3fClass actual;
 Vector3fClass desired;
 
@@ -28,13 +31,17 @@ PidClass zPid;
 Adafruit_PWMServoDriver servoController = Adafruit_PWMServoDriver();
 Adafruit_BNO055 ahrs = Adafruit_BNO055(55); //Attitude heading reference system
 char serialBuffer[12];
+
 long lastHostAhrsUpdate;
 
 void setup() 
 {
 	//Serial
 	Serial.begin(9600);
-	Serial.println("INIT");
+	lastHostAhrsUpdate = 0;
+	Serial.print("AHRS");
+	Serial.write(ASCII_EOT); // Ascii end of transmission
+	Serial.flush();
 
 	//PIDs
 	xPid.setConstants(1, 0, 0);
@@ -55,15 +62,11 @@ void setup()
 			break;
 		}
 		else {
-			Serial.println("BNO055 ERROR");
+			//Serial.println("BNO055 ERROR");
 		}
 	}
 
-	
-	lastHostAhrsUpdate = 0;
-	delay(1000);
 	ahrs.setExtCrystalUse(true);
-	Serial.println("INIT COMPLT");
 }
 
 void loop() 
@@ -83,9 +86,12 @@ void loop()
 	//Update the actual 
 	imu::Vector<3> vector = ahrs.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-	actual.setX(vector.x());
+	// vec.z : -pitch
+	// vec.y : roll
+	// vec.x : yaw
+	actual.setX(-vector.z());
 	actual.setY(vector.y());
-	actual.setZ(vector.z());
+	actual.setZ(vector.x());
 
 	//Calculate current error
 	float xError = desired.getX() - actual.getX();
@@ -109,7 +115,7 @@ void loop()
 	setServoValue(ELEVATOR_CH, elevatorValue);
 	setServoValue(AILERON_CH, aileronValue);
 
-	if (millis() - lastHostAhrsUpdate > 10) {
+	if (millis() - lastHostAhrsUpdate > UPDATE_DELAY) {
 		sendAhrs();
 		lastHostAhrsUpdate = millis();
 	}
@@ -123,6 +129,7 @@ void sendAhrs() {
 	Serial.print(",");		
 	printFloat(actual.getZ());
 	Serial.print(">");	
+	Serial.write(ASCII_EOT);
 	Serial.flush();
 }
 
