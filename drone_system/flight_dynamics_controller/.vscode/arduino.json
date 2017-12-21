@@ -1,0 +1,5 @@
+{
+    "sketch": "flight_dynamics_controller.ino",
+    "board": "arduino:avr:uno",
+    "port": "COM5"
+}
