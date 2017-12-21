@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-387728765/base-trx.iml" filepath="$PROJECT_DIR$/.idea/modules/-387728765/base-trx.iml" group="base-trx" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-387728765/base-trx_main.iml" filepath="$PROJECT_DIR$/.idea/modules/-387728765/base-trx_main.iml" group="base-trx" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-387728765/base-trx_test.iml" filepath="$PROJECT_DIR$/.idea/modules/-387728765/base-trx_test.iml" group="base-trx" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/griffon-ground-control.iml" filepath="$PROJECT_DIR$/.idea/modules/griffon-ground-control.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/griffon-ground-control_main.iml" filepath="$PROJECT_DIR$/.idea/modules/griffon-ground-control_main.iml" group="griffon-ground-control" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/griffon-ground-control_test.iml" filepath="$PROJECT_DIR$/.idea/modules/griffon-ground-control_test.iml" group="griffon-ground-control" />

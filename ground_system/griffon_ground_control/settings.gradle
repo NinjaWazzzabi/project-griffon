@@ -1,3 +1,5 @@
 rootProject.name = 'griffon-ground-control'
 rootProject.name = 'griffon-ground-control'
 
+include "base-trx"
+project(':base-trx').projectDir = new File('C:/Users/amk19/IdeaProjects/project_griffon/ground_system/base_trx')

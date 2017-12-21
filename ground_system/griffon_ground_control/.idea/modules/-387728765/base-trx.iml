@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":base-trx" external.linked.project.path="$MODULE_DIR$/../../../../base_trx" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="com.projectgriffon.ground_system.base_trx" external.system.module.version="0.0.1-DEV" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../base_trx">
+      <excludeFolder url="file://$MODULE_DIR$/../../../../base_trx/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../base_trx/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../../base_trx/out" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
