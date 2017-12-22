@@ -9,10 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static utils.ByteConversion.byteArrayToCharArray;
+import static utils.ByteConversion.charArrayToByteArray;
+
 public class ArduinoFactory {
     @Getter
     private static final ArduinoFactory instance = new ArduinoFactory();
     private static final int BAUD = SerialPort.BAUDRATE_9600;
+    private static final int GET_DESC_TIMEOUT = 10000;
 
     private final List<Arduino> arduinos;
 
@@ -76,57 +80,41 @@ public class ArduinoFactory {
     }
 
     private String getArduinoDescription(SerialReader reader, SerialWriter writer) {
-        final StringBuilder sb = new StringBuilder();
-        long currentTime = System.currentTimeMillis();
-        // TODO: 21/12/2017 I think it works, but it's kinda ugly
-        Thread getDesc = new Thread(() -> {
-            final boolean[] descReceived = {false};
-            reader.setOnInformationReceived(bytes -> {
-                boolean first = true;
-                char[] chars = ByteConversion.byteArrayToCharArray(bytes);
-                for (char aChar : chars) {
-                    if (aChar == ArduinoCommunicationValues.EOT) {
-                        if (first) {
-                            sb.delete(0,sb.length());
-                            first = false;
-                        } else {
-                            reader.setOnInformationReceived(null);
-                            descReceived[0] = true;
-                            System.out.println(sb.toString());
-                            writer.write(utils.ByteConversion.charArrayToByteArray(sb.toString().toCharArray()));
-                            return;
-                        }
-                    } else {
-                        sb.append(aChar);
-                    }
-                }
-            });
+        StringBuilder desc = new StringBuilder();
 
-            long timeOut = 10000;
-            long startTime = System.currentTimeMillis();
-            while (!descReceived[0] && System.currentTimeMillis() - startTime <= timeOut) {
-                Thread.yield();
+        reader.setOnInformationReceived(bytes -> {
+            StringBuilder currentDesc = new StringBuilder();
+            StringBuilder lastDesc = new StringBuilder(" ");
+
+            for (char aChar : byteArrayToCharArray(bytes)) {
+                if (aChar == ArduinoCommunicationValues.EOT) {
+                    // Check that two reads in a row gives the same description
+                    if (currentDesc.toString().equals(lastDesc.toString())) {
+                        reader.setOnInformationReceived(null);
+                        writer.write(charArrayToByteArray(currentDesc.toString().toCharArray()));
+                        desc.append(currentDesc.toString());
+                        return;
+                    } else {
+                        lastDesc = currentDesc;
+                        currentDesc = new StringBuilder();
+                    }
+                } else {
+                    currentDesc.append(aChar);
+                }
             }
         });
 
-        getDesc.start();
-        try {
-            getDesc.join(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        long startTime = System.currentTimeMillis();
+        while (desc.length() == 0 && System.currentTimeMillis() - startTime <= GET_DESC_TIMEOUT) {
+            Thread.yield();
         }
 
-        System.out.println("-------------------------------------------------------------");
-        System.out.println("Desc: " + sb.toString());
-        System.out.println("Time Taken: " + (System.currentTimeMillis() - currentTime));
-        System.out.println("-------------------------------------------------------------");
-        return sb.toString();
+        return desc.toString();
     }
 
     public static List<String> getAllPortNames() {
         List<String> portNames = new ArrayList<>();
         portNames.addAll(Arrays.asList(SerialPortList.getPortNames()));
-        System.out.println(Arrays.toString(portNames.toArray()));
         return portNames;
     }
 }
