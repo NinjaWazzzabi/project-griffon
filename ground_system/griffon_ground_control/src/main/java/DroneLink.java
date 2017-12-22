@@ -26,7 +26,7 @@ public class DroneLink {
     }
 
     public void start() {
-        reconnectLink();
+        new Thread(this::reconnectLink).start();
     }
 
     public void sendData(String data) {
