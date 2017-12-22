@@ -14,7 +14,10 @@
 #define MIN_SERVO_VALUE 1000
 
 #define ASCII_EOT 4
+#define ASCII_ACK 6
 #define UPDATE_DELAY 10
+
+const String desc = "AHRS";
 
 Vector3fClass actual;
 Vector3fClass desired;
@@ -38,10 +41,22 @@ void setup()
 {
 	//Serial
 	Serial.begin(9600);
+	Serial.setTimeout(200);
 	lastHostAhrsUpdate = 0;
-	Serial.print("AHRS");
-	Serial.write(ASCII_EOT); // Ascii end of transmission
-	Serial.flush();
+
+	// Sends it's desciption until it has gotten it back.
+	while (true) {
+		Serial.print(desc);
+		Serial.flush();
+		Serial.write(ASCII_EOT);
+		Serial.flush();
+		delay(100);
+		if (Serial.available() > 3) {
+			if (Serial.readString().equals(desc)) {
+				break;
+			}
+		}
+	}
 
 	//PIDs
 	xPid.setConstants(1, 0, 0);
@@ -61,17 +76,16 @@ void setup()
 		if (ahrs.begin()) {
 			break;
 		}
-		else {
-			//Serial.println("BNO055 ERROR");
-		}
 	}
-
 	ahrs.setExtCrystalUse(true);
 }
 
+
+long time = 0;
+
 void loop() 
 {
-	//Read command data if any
+	//Read command data if there's any
 	if (Serial.available() >= 12)
 	{
 		for (int i = 0; i < 12; i++) 
@@ -119,6 +133,11 @@ void loop()
 		sendAhrs();
 		lastHostAhrsUpdate = millis();
 	}
+
+	// Timing Debug Check
+	// long deltaTime = millis() - time;
+	// time = millis();
+	// Serial.println(deltaTime);
 }
 
 void sendAhrs() {

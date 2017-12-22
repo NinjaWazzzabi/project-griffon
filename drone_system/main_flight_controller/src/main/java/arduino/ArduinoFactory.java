@@ -70,34 +70,39 @@ public class ArduinoFactory {
         SerialWriter writer = new SerialWriter(serialPort);
 
 
-//        String desc = getArduinoDescription(serialReader);
-        String desc = "";
+        String desc = getArduinoDescription(serialReader, writer);
 
-        return new Arduino(portName + "," + desc + "AHRS",writer,serialReader,serialPort);
+        return new Arduino(portName + "," + desc ,writer,serialReader,serialPort);
     }
 
-    // TODO: 21/12/2017 Currently not working correctly
-    // The arduino freezes and doesn't write anything while using this method
-    private String getArduinoDescription(SerialReader reader) {
+    private String getArduinoDescription(SerialReader reader, SerialWriter writer) {
         final StringBuilder sb = new StringBuilder();
-
+        long currentTime = System.currentTimeMillis();
         // TODO: 21/12/2017 I think it works, but it's kinda ugly
         Thread getDesc = new Thread(() -> {
             final boolean[] descReceived = {false};
             reader.setOnInformationReceived(bytes -> {
+                boolean first = true;
                 char[] chars = ByteConversion.byteArrayToCharArray(bytes);
                 for (char aChar : chars) {
                     if (aChar == ArduinoCommunicationValues.EOT) {
-                        reader.setOnInformationReceived(null);
-                        descReceived[0] = true;
-                        return;
+                        if (first) {
+                            sb.delete(0,sb.length());
+                            first = false;
+                        } else {
+                            reader.setOnInformationReceived(null);
+                            descReceived[0] = true;
+                            System.out.println(sb.toString());
+                            writer.write(utils.ByteConversion.charArrayToByteArray(sb.toString().toCharArray()));
+                            return;
+                        }
                     } else {
                         sb.append(aChar);
                     }
                 }
             });
 
-            long timeOut = 5000;
+            long timeOut = 10000;
             long startTime = System.currentTimeMillis();
             while (!descReceived[0] && System.currentTimeMillis() - startTime <= timeOut) {
                 Thread.yield();
@@ -111,7 +116,10 @@ public class ArduinoFactory {
             e.printStackTrace();
         }
 
-        System.out.println(sb.toString());
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("Desc: " + sb.toString());
+        System.out.println("Time Taken: " + (System.currentTimeMillis() - currentTime));
+        System.out.println("-------------------------------------------------------------");
         return sb.toString();
     }
 
