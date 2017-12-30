@@ -1,3 +1,5 @@
+package drone;
+
 public interface Drone {
     int getId();
 

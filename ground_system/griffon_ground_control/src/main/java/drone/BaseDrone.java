@@ -1,9 +1,11 @@
+package drone;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 
-public class BaseDrone implements Drone {
+class BaseDrone implements Drone {
 
     @Getter
     protected final int id;
@@ -23,12 +25,12 @@ public class BaseDrone implements Drone {
     }
 
     void copyStatsFromDrone(Drone drone) {
-        this.longitude = drone.getLongitude();
-        this.latitude = drone.getLatitude();
+        this.longitude = getLongitude();
+        this.latitude = getLatitude();
 
-        this.pitch = drone.getPitch();
-        this.roll = drone.getRoll();
-        this.yaw = drone.getYaw();
+        this.pitch = getPitch();
+        this.roll = getRoll();
+        this.yaw = getYaw();
     }
 
     @Override

@@ -1,3 +1,5 @@
+package drone;
+
 import lombok.Setter;
 
 import java.io.DataInputStream;
@@ -6,7 +8,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.util.function.Consumer;
 
-public class NetworkLink implements ConnectiveLink{
+public class NetworkLink implements ConnectiveLink {
     private static final byte END_BYTE = (byte) 4; // From ASCII EOT (End Of Transmission)
 
     private final String ipAddress;

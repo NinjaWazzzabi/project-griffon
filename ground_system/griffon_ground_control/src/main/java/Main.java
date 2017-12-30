@@ -1,3 +1,6 @@
+import drone.Drone;
+import drone.LinkedDrone;
+import drone.NetworkLink;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -10,9 +13,9 @@ import static spark.Spark.*;
 
 
 public class Main {
-    private List<LinkedDrone> droneList = new ArrayList<>();
+    private List<Drone> droneList = new ArrayList<>();
     private Gson gson = new Gson();
-    private LinkedDrone specDrone;
+    private Drone specDrone;
 
     Main() {
         specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
@@ -26,7 +29,7 @@ public class Main {
     private void initWeb() {
         port(4545);
         get("/drones",(req,res) -> getDroneListJson());
-        for (LinkedDrone drone : droneList) {
+        for (Drone drone : droneList) {
             get("/drone" + drone.getId() ,(req,res) -> drone.getJson());
         }
     }

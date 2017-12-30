@@ -1,6 +1,6 @@
+package drone;
+
 import com.google.gson.Gson;
-import lombok.Getter;
-import lombok.Setter;
 
 public class LinkedDrone extends BaseDrone {
 
