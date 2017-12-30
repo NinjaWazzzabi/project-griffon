@@ -3,7 +3,6 @@ package drone;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Getter;
-import lombok.Setter;
 
 class BaseDrone implements Drone {
 
@@ -12,11 +11,9 @@ class BaseDrone implements Drone {
     protected final Gson gson;
 
     @Getter
-    @Setter
     protected double longitude, latitude;
 
     @Getter
-    @Setter
     protected float pitch, roll, yaw;
 
     BaseDrone(int id, Gson gson) {
