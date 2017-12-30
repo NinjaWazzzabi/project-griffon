@@ -25,12 +25,12 @@ class BaseDrone implements Drone {
     }
 
     void copyStatsFromDrone(Drone drone) {
-        this.longitude = getLongitude();
-        this.latitude = getLatitude();
+        this.longitude = drone.getLongitude();
+        this.latitude = drone.getLatitude();
 
-        this.pitch = getPitch();
-        this.roll = getRoll();
-        this.yaw = getYaw();
+        this.pitch = drone.getPitch();
+        this.roll = drone.getRoll();
+        this.yaw = drone.getYaw();
     }
 
     @Override
