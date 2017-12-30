@@ -1,5 +1,6 @@
 import drone.Drone;
 import drone.LinkedDrone;
+import drone.MockLoiterDrone;
 import drone.NetworkLink;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -18,7 +19,13 @@ public class Main {
     private Drone specDrone;
 
     Main() {
-        specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
+        //specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
+        MockLoiterDrone mockDrone = new MockLoiterDrone(25, gson);
+        mockDrone.setLoiterCenter(0,0);
+        mockDrone.setRadius(25);
+        mockDrone.setSpeed(5);
+        mockDrone.startLoiter();
+        specDrone = mockDrone;
         droneList.add(specDrone);
 
 
