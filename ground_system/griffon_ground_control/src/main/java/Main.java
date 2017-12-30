@@ -10,19 +10,14 @@ import static spark.Spark.*;
 
 
 public class Main {
-    private List<Drone> droneList = new ArrayList<>();
+    private List<LinkedDrone> droneList = new ArrayList<>();
     private Gson gson = new Gson();
-    private Drone specDrone;
+    private LinkedDrone specDrone;
 
     Main() {
-        specDrone = new Drone(25,9001);
+        specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
         droneList.add(specDrone);
-        DroneLink droneLink = new DroneLink(specDrone);
-        droneLink.setOnInputReceived(s -> {
-            Drone mockDrone = gson.fromJson(s, Drone.class);
-            specDrone.copyStatsFromDrone(mockDrone);
-        });
-        droneLink.start();
+
 
         initWeb();
     }
@@ -31,8 +26,8 @@ public class Main {
     private void initWeb() {
         port(4545);
         get("/drones",(req,res) -> getDroneListJson());
-        for (Drone drone : droneList) {
-            get("/drone" + drone.getId() ,(req,res) -> gson.toJson(drone));
+        for (LinkedDrone drone : droneList) {
+            get("/drone" + drone.getId() ,(req,res) -> drone.getJson());
         }
     }
 
