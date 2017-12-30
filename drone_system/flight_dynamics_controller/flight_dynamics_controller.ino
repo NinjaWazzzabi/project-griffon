@@ -100,11 +100,11 @@ void loop()
 	//Update the actual 
 	imu::Vector<3> vector = ahrs.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-	// vec.z : -pitch
-	// vec.y : roll
+	// vec.y : -pitch
+	// vec.z : roll
 	// vec.x : yaw
-	actual.setX(-vector.z());
-	actual.setY(vector.y());
+	actual.setX(vector.y());
+	actual.setY(-vector.z());
 	actual.setZ(vector.x());
 
 	//Calculate current error
