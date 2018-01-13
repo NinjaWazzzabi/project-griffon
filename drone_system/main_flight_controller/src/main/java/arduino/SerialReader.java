@@ -16,8 +16,9 @@ class SerialReader implements SerialPortEventListener {
     private SerialPort serialPort;
     private Consumer<byte[]> onInformationRecieved;
 
-    SerialReader(SerialPort serialPort) {
+    SerialReader(SerialPort serialPort) throws SerialPortException {
         this.serialPort = serialPort;
+        serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
     }
 
     void setOnInformationReceived(Consumer<byte[]> consumer) {

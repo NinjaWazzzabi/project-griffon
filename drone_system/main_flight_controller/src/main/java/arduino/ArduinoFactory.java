@@ -1,9 +1,9 @@
 package arduino;
 
 import jssc.SerialPort;
+import jssc.SerialPortException;
 import jssc.SerialPortList;
 import lombok.Getter;
-import utils.ByteConversion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,6 @@ public class ArduinoFactory {
         );
 
         SerialReader serialReader = new SerialReader(serialPort);
-        serialPort.addEventListener(serialReader, SerialPort.MASK_RXCHAR);
 
         SerialWriter writer = new SerialWriter(serialPort);
 
