@@ -1,6 +1,7 @@
 package drone;
 
 import com.google.gson.Gson;
+import geocoordinate.MovableCoordinate;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,8 @@ public class MockLoiterDrone extends BaseDrone{
     @Setter
     private double speed, radius;
 
+    private MovableCoordinate movableCoordinate;
+
     private double loiterCenterLongitude;
     private double loiterCenterLatitude;
 
@@ -25,6 +28,8 @@ public class MockLoiterDrone extends BaseDrone{
         loiterCenterLongitude = 0;
         loiterCenterLatitude = 0;
         lastUpdate = 0;
+        movableCoordinate = new MovableCoordinate(this.coordinate);
+        coordinate = movableCoordinate;
     }
 
     public void setLoiterCenter(double longitude, double latitude) {
@@ -68,8 +73,8 @@ public class MockLoiterDrone extends BaseDrone{
         currentRadian = (currentRadian + radiansTraveled) % (2 * Math.PI);
 
         // Update position
-        this.longitude = loiterCenterLongitude + (Math.sin(currentRadian) * radius);
-        this.latitude = loiterCenterLatitude + (Math.cos(currentRadian) * radius);
+        movableCoordinate.set(loiterCenterLongitude,loiterCenterLatitude);
+        movableCoordinate.offsetMeters(Math.sin(currentRadian) * radius, Math.cos(currentRadian) * radius);
 
         // Set rotation
         this.roll = (float) (-90 / radius);

@@ -1,10 +1,11 @@
 package drone;
 
+import geocoordinate.GeoCoordinate;
+
 public interface Drone {
     int getId();
 
-    double getLongitude();
-    double getLatitude();
+    GeoCoordinate getCoordinate();
 
     float getPitch();
     float getRoll();

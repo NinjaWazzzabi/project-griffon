@@ -1,6 +1,7 @@
 package drone;
 
 import com.google.gson.Gson;
+import geocoordinate.GeoCoordinate;
 
 public class AlterableDrone extends BaseDrone {
 
@@ -8,11 +9,8 @@ public class AlterableDrone extends BaseDrone {
         super(id, gson);
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setCoordinate(GeoCoordinate coordinate) {
+        this.coordinate = coordinate.clone();
     }
 
     public void setPitch(float pitch) {

@@ -2,6 +2,8 @@ package drone;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import geocoordinate.BaseCoordinate;
+import geocoordinate.GeoCoordinate;
 import lombok.Getter;
 
 class BaseDrone implements Drone {
@@ -11,19 +13,23 @@ class BaseDrone implements Drone {
     protected final Gson gson;
 
     @Getter
-    protected double longitude, latitude;
+    protected GeoCoordinate coordinate;
 
     @Getter
     protected float pitch, roll, yaw;
 
-    BaseDrone(int id, Gson gson) {
+    BaseDrone(int id, Gson gson, GeoCoordinate coordinate) {
         this.id = id;
         this.gson = gson;
+        this.coordinate = coordinate.clone();
+    }
+
+    BaseDrone(int id, Gson gson) {
+        this(id,gson, new BaseCoordinate(0,0));
     }
 
     void copyStatsFromDrone(Drone drone) {
-        this.longitude = drone.getLongitude();
-        this.latitude = drone.getLatitude();
+        this.coordinate = drone.getCoordinate().clone();
 
         this.pitch = drone.getPitch();
         this.roll = drone.getRoll();
@@ -34,8 +40,8 @@ class BaseDrone implements Drone {
     public String getJson() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id",id);
-        jsonObject.addProperty("longitude",longitude);
-        jsonObject.addProperty("latitude",latitude);
+        jsonObject.addProperty("longitude",coordinate.getLongitude());
+        jsonObject.addProperty("latitude",coordinate.getLatitude());
         jsonObject.addProperty("pitch",pitch);
         jsonObject.addProperty("roll",roll);
         jsonObject.addProperty("yaw",yaw);

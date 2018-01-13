@@ -8,8 +8,6 @@ public class LinkedDrone extends BaseDrone {
 
     public LinkedDrone(int id, Gson gson, ConnectiveLink droneLink) {
         super(id,gson);
-        this.longitude = 0;
-        this.latitude = 0;
         this.pitch = 0;
         this.roll = 0;
         this.yaw = 0;
