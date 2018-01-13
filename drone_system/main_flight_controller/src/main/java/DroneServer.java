@@ -7,9 +7,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.function.Consumer;
 
-public class DroneServer {
-    private static final byte END_OF_MESSAGE = (byte) 2;
+import static arduino.ArduinoCommunicationValues.EOT;
 
+public class DroneServer {
     private final int PORT;
     private final StringBuilder input;
     private ServerSocket serverService;
@@ -35,7 +35,7 @@ public class DroneServer {
         if (isConnected() && outputStream != null) {
             outputStream.print(data);
             outputStream.flush();
-            outputStream.write((byte) 2);
+            outputStream.write(EOT);
             outputStream.flush();
         }
     }
@@ -69,7 +69,7 @@ public class DroneServer {
         synchronized (input) {
             char[] chars = text.toCharArray();
             for (char aChar : chars) {
-                if (aChar == END_OF_MESSAGE) {
+                if (aChar == EOT) {
                     String data = input.toString();
                     input.delete(0,input.length());
                     onInputReceived.accept(data);
