@@ -1,3 +1,5 @@
+package utils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,13 +10,13 @@ import java.util.function.Consumer;
 /**
  * Reader for handling the input stream of characters
  */
-class StreamReader extends Thread {
+public class StreamReader extends Thread {
 
     private InputStream inputStream;
     private Consumer<String> onInputRead;
     private Runnable onStreamClosed;
 
-    StreamReader(InputStream inputStream) {
+    public StreamReader(InputStream inputStream) {
         this.inputStream = inputStream;
     }
 
@@ -32,11 +34,11 @@ class StreamReader extends Thread {
         }
     }
 
-    void setOnInputRead(Consumer<String> consumer) {
+    public void setOnInputRead(Consumer<String> consumer) {
         this.onInputRead = consumer;
     }
 
-    void setOnStreamClosed(Runnable runnable) {
+    public void setOnStreamClosed(Runnable runnable) {
         this.onStreamClosed = runnable;
     }
 

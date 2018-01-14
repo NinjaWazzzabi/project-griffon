@@ -1,4 +1,5 @@
 import lombok.Setter;
+import utils.StreamReader;
 
 import java.io.DataInputStream;
 import java.io.IOException;
