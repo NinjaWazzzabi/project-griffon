@@ -1,9 +1,9 @@
-package arduino;
+package utils;
 
 /**
  * Special values for communication to and from the arduino. Reference: http://www.asciitable.com/
  */
-public class ArduinoCommunicationValues {
+public class AsciiValues {
 
     public final static int SOH = 1;    //Start of Heading
     public final static int STX = 2;    //Start of Text

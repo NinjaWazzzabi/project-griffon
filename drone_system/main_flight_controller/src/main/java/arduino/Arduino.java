@@ -4,6 +4,7 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import lombok.Getter;
 import lombok.Setter;
+import utils.AsciiValues;
 
 import java.util.function.Consumer;
 
@@ -48,7 +49,7 @@ public class Arduino {
     private synchronized void inputReceived(byte[] data) {
         char[] charArray = byteArrayToCharArray(data);
         for (char c : charArray) {
-            if (c == ArduinoCommunicationValues.EOT) {
+            if (c == AsciiValues.EOT) {
                 String finalData = currentInput.toString();
                 currentInput.delete(0,currentInput.length());
                 if (onDataReceived != null) {

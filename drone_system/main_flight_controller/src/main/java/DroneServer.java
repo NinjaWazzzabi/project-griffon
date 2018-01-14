@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.function.Consumer;
 
-import static arduino.ArduinoCommunicationValues.EOT;
+import static utils.AsciiValues.EOT;
 
 public class DroneServer {
     private final int PORT;
