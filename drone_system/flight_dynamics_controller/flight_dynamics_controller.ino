@@ -14,6 +14,7 @@
 #define MIN_SERVO_VALUE 1000
 
 #define ASCII_EOT 4
+#define ASCII_SOH 1
 #define ASCII_ACK 6
 #define UPDATE_DELAY 10
 
@@ -46,10 +47,18 @@ void setup()
 
 	// Sends it's desciption until it has gotten it back.
 	while (true) {
+		// Start of heading
+		Serial.write(ASCII_SOH);
+		Serial.flush();
+
+		// Desciption
 		Serial.print(desc);
 		Serial.flush();
+
+		// End of transmission
 		Serial.write(ASCII_EOT);
 		Serial.flush();
+
 		delay(100);
 		if (Serial.available() > 3) {
 			if (Serial.readString().equals(desc)) {

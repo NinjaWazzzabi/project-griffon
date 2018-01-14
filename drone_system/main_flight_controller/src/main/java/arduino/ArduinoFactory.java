@@ -1,22 +1,25 @@
 package arduino;
 
 import jssc.SerialPort;
-import jssc.SerialPortException;
 import jssc.SerialPortList;
 import lombok.Getter;
+import utils.ByteConversion;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static utils.ByteConversion.byteArrayToCharArray;
-import static utils.ByteConversion.charArrayToByteArray;
-
 public class ArduinoFactory {
+    private static final byte ASCII_COMMA = (byte) 44;
+    private static final byte ASCII_GREATER_THAT = (byte) 62;
+    private static final byte ASCII_LESS_THAT = (byte) 60;
+
+    private static final String regex = "(?<=[\\x01])\\w+(?=[\\x04])";
+
     @Getter
     private static final ArduinoFactory instance = new ArduinoFactory();
     private static final int BAUD = SerialPort.BAUDRATE_9600;
-    private static final int GET_DESC_TIMEOUT = 10000;
+    private static final int GET_DESC_TIMEOUT = 5000;
 
     private final List<Arduino> arduinos;
 
@@ -55,6 +58,7 @@ public class ArduinoFactory {
         }
     }
 
+    // TODO: 13/01/2018 Fix getting arduino description!!!
     private Arduino connectToArduino(String portName) throws Exception {
         SerialPort serialPort = new SerialPort(portName);
         serialPort.openPort();
@@ -74,41 +78,23 @@ public class ArduinoFactory {
 
 
         String desc = getArduinoDescription(serialReader, writer);
-
         return new Arduino(portName + "," + desc ,writer,serialReader,serialPort);
     }
 
     private String getArduinoDescription(SerialReader reader, SerialWriter writer) {
-        StringBuilder desc = new StringBuilder();
+        RegexFinder sf = new RegexFinder(regex);
 
         reader.setOnInformationReceived(bytes -> {
-            StringBuilder currentDesc = new StringBuilder();
-            StringBuilder lastDesc = new StringBuilder(" ");
-
-            for (char aChar : byteArrayToCharArray(bytes)) {
-                if (aChar == ArduinoCommunicationValues.EOT) {
-                    // Check that two reads in a row gives the same description
-                    if (currentDesc.toString().equals(lastDesc.toString())) {
-                        reader.setOnInformationReceived(null);
-                        writer.write(charArrayToByteArray(currentDesc.toString().toCharArray()));
-                        desc.append(currentDesc.toString());
-                        return;
-                    } else {
-                        lastDesc = currentDesc;
-                        currentDesc = new StringBuilder();
-                    }
-                } else {
-                    currentDesc.append(aChar);
-                }
+            for (byte aByte : bytes) {
+                sf.appendStringData(String.valueOf((char) aByte));
             }
         });
 
-        long startTime = System.currentTimeMillis();
-        while (desc.length() == 0 && System.currentTimeMillis() - startTime <= GET_DESC_TIMEOUT) {
-            Thread.yield();
-        }
+        String desc = sf.startSearch(4, 5000);
 
-        return desc.toString();
+        writer.write(ByteConversion.charArrayToByteArray(desc.toCharArray()));
+
+        return desc;
     }
 
     public static List<String> getAllPortNames() {
