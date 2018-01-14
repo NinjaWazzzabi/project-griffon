@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 class SerialReader implements SerialPortEventListener {
 
     private SerialPort serialPort;
-    private Consumer<byte[]> onInformationRecieved;
+    private Consumer<byte[]> onInformationReceived;
 
     SerialReader(SerialPort serialPort) throws SerialPortException {
         this.serialPort = serialPort;
@@ -22,7 +22,7 @@ class SerialReader implements SerialPortEventListener {
     }
 
     void setOnInformationReceived(Consumer<byte[]> consumer) {
-        this.onInformationRecieved = consumer;
+        this.onInformationReceived = consumer;
     }
 
     @Override
@@ -30,8 +30,8 @@ class SerialReader implements SerialPortEventListener {
         if(event.isRXCHAR() && event.getEventValue() > 0) {
             try {
                 byte[] bytes = serialPort.readBytes();
-                if (onInformationRecieved != null) {
-                    onInformationRecieved.accept(bytes);
+                if (onInformationReceived != null) {
+                    onInformationReceived.accept(bytes);
                 }
             }
             catch (SerialPortException ex) {
