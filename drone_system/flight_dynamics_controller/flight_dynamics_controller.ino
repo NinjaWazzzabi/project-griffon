@@ -34,7 +34,10 @@ PidClass zPid;
 
 Adafruit_PWMServoDriver servoController = Adafruit_PWMServoDriver();
 Adafruit_BNO055 ahrs = Adafruit_BNO055(55); //Attitude heading reference system
-char serialBuffer[12];
+
+#define BUFFER_SIZE 16
+char serialBuffer[BUFFER_SIZE];
+unsigned char bufferIndex;
 
 long lastHostAhrsUpdate;
 
@@ -44,6 +47,7 @@ void setup()
 	Serial.begin(9600);
 	Serial.setTimeout(200);
 	lastHostAhrsUpdate = 0;
+	bufferIndex = 0;
 
 	// Sends it's desciption until it has gotten it back.
 	while (true) {
@@ -95,16 +99,7 @@ long time = 0;
 void loop() 
 {
 	//Read command data if there's any
-	if (Serial.available() >= 12)
-	{
-		for (int i = 0; i < 12; i++) 
-		{
-			serialBuffer[i] = Serial.read();
-		}
-		desired.setX(*((float *) &serialBuffer[0]));
-		desired.setY(*((float *) &serialBuffer[4]));
-		desired.setZ(*((float *) &serialBuffer[8]));
-	}
+	readCommands();
 
 	//Update the actual 
 	imu::Vector<3> vector = ahrs.getVector(Adafruit_BNO055::VECTOR_EULER);
@@ -127,7 +122,7 @@ void loop()
 	yPid.update(yError, currentTime);
 	zPid.update(zError, currentTime);
 
-	throttleValue = desired.getLength();
+	//throttleValue = desired.getLength();
 	rudderValue += zError;
 	elevatorValue += yError;
 	aileronValue += xError;
@@ -149,6 +144,52 @@ void loop()
 	// Serial.println(deltaTime);
 }
 
+
+//Tested!
+bool serialError = false;
+void readCommands() {
+	while (Serial.available() > 0)
+	{
+		char input = Serial.read();
+		if (input == ASCII_EOT) 
+		{
+			if (!serialError && bufferIndex == 4) 
+			{
+				parseFlightCommand(serialBuffer);
+			}
+			serialError = false;
+			bufferIndex = 0;
+		} 
+		else if (!serialError)
+		{
+			if (serialError || bufferIndex >= BUFFER_SIZE) 
+			{
+				serialError = true; //Buffer overflow!
+            } 
+			else 
+			{
+				serialBuffer[bufferIndex] = input;
+				bufferIndex++;
+			}
+		}
+		
+	}
+}
+
+//Tested!
+void parseFlightCommand(char *vector) {
+	float throttle = (float) (char) *vector;
+	float rudder = (float) (char) *(vector + 1);
+	float pitch = (float) (char) *(vector + 2);
+	float roll = (float) (char) *(vector + 3);
+
+	desired.setX(pitch);
+	desired.setY(roll);
+	desired.setZ(rudder);
+	throttleValue = throttle;
+}
+
+//Tested!
 void sendAhrs() {
 	Serial.print("<");
 	printFloat(actual.getX());
@@ -161,6 +202,7 @@ void sendAhrs() {
 	Serial.flush();
 }
 
+//Tested!
 void printFloat(float f) 
 {
 	Serial.print(f,4);
