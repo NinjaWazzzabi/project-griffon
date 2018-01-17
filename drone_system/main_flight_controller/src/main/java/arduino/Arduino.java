@@ -31,6 +31,10 @@ public class Arduino {
         this.serialPort = serialPort;
     }
 
+    public boolean hasDescription(Descriptions description) {
+        return desc.contains(description.getDescValue());
+    }
+
     public synchronized void writeTo(String data) {
         char[] chars = data.toCharArray();
         byte[] bytes = new byte[chars.length];
@@ -39,7 +43,11 @@ public class Arduino {
             bytes[i] = (byte) chars[i];
         }
 
-        serialWriter.write(bytes);
+        writeTo(bytes);
+    }
+
+    public synchronized void writeTo(byte[] byteArray) {
+        serialWriter.write(byteArray);
     }
 
     public String getConnectedPortName() {

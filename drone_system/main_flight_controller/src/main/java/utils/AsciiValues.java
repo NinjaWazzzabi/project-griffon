@@ -5,12 +5,12 @@ package utils;
  */
 public class AsciiValues {
 
-    public final static int SOH = 1;    //Start of Heading
-    public final static int STX = 2;    //Start of Text
-    public final static int ETX = 3;    //End of Text
-    public final static int EOT = 4;    //End of Transmission
-    public final static int ENQ = 5;    //Enquiry
-    public final static int ACK = 6;    //Acknowledge
-    public final static int LF  = 12;   //NL line feed, new line
+    public final static byte SOH = 1;    //Start of Heading
+    public final static byte STX = 2;    //Start of Text
+    public final static byte ETX = 3;    //End of Text
+    public final static byte EOT = 4;    //End of Transmission
+    public final static byte ENQ = 5;    //Enquiry
+    public final static byte ACK = 6;    //Acknowledge
+    public final static byte LF  = 12;   //NL line feed, new line
 
 }
