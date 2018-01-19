@@ -1,8 +1,6 @@
 package drone;
 
 import com.google.gson.Gson;
-import geocoordinate.BaseCoordinate;
-import geocoordinate.GeoCoordinate;
 
 public class LinkedDrone extends BaseDrone {
 
@@ -16,8 +14,7 @@ public class LinkedDrone extends BaseDrone {
 
         this.droneLink = droneLink;
         droneLink.setOnInputReceived(s -> {
-            AlterableDrone mockDrone = gson.fromJson(s, AlterableDrone.class);
-            mockDrone.setCoordinate(new BaseCoordinate(gson.fromJson(s, BaseCoordinate.class)));
+            Drone mockDrone = gson.fromJson(s, BaseDrone.class);
             copyStatsFromDrone(mockDrone);
         });
         droneLink.startLink();

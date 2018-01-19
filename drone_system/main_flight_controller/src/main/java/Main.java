@@ -1,19 +1,21 @@
 import com.google.gson.Gson;
+import drone.AlterableDrone;
 import sensors.Ahrs;
 
 import java.io.IOException;
 
 public class Main {
-
-    private Drone drone;
-    private DroneServer server;
+    private static int PORT_NUM = 9001;
+    
+    private AlterableDrone drone;
+    private Server server;
     private Gson gson;
 
     public Main() throws IOException {
         gson = new Gson();
-        drone = new Drone(25,9001);
+        drone = new AlterableDrone(25,gson);
 
-        server = new DroneServer(drone);
+        server = new Server(PORT_NUM);
         server.setOnInputReceived(this::inputReceived);
 
         Ahrs ahrs = new Ahrs();
@@ -25,7 +27,7 @@ public class Main {
 
         new Thread(() -> {
             while (true) {
-                server.sendData(gson.toJson(drone));
+                server.sendData(drone.getJson());
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -38,9 +40,7 @@ public class Main {
 
     private void inputReceived(String data) {
         try {
-            Drone mockDrone = gson.fromJson(data, Drone.class);
-            // TODO: 21/12/2017 This will copy old and false sensor data as well, it should only copy command data
-            this.drone.copyStatsFromDrone(mockDrone);
+            // TODO: 17/01/2018 Update drone task
         } catch (IllegalStateException ise) {
             ise.printStackTrace();
         }

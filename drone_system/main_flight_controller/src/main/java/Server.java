@@ -1,3 +1,4 @@
+import drone.Drone;
 import lombok.Setter;
 import utils.StreamReader;
 
@@ -10,7 +11,7 @@ import java.util.function.Consumer;
 
 import static utils.AsciiValues.EOT;
 
-public class DroneServer {
+public class Server {
     private final int PORT;
     private final StringBuilder input;
     private ServerSocket serverService;
@@ -20,9 +21,9 @@ public class DroneServer {
     @Setter
     private Consumer<String> onInputReceived;
 
-    DroneServer(Drone drone) throws IOException {
+    Server(int port) throws IOException {
         input = new StringBuilder();
-        PORT = drone.getPort();
+        PORT = port;
         serverService = new ServerSocket(PORT);
 
         new Thread(this::autoFindConnection).start();

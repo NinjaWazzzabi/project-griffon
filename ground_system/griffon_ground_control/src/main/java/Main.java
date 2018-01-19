@@ -19,13 +19,13 @@ public class Main {
     private Drone specDrone;
 
     Main() {
-        //specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
-        MockLoiterDrone mockDrone = new MockLoiterDrone(25, gson);
-        mockDrone.setLoiterCenter(0,0);
-        mockDrone.setRadius(50);
-        mockDrone.setSpeed(15);
-        mockDrone.startLoiter();
-        specDrone = mockDrone;
+        specDrone = new LinkedDrone(25,gson, new NetworkLink("192.168.0.2", 9001));
+//        MockLoiterDrone mockDrone = new MockLoiterDrone(25, gson);
+//        mockDrone.setLoiterCenter(0,0);
+//        mockDrone.setRadius(50);
+//        mockDrone.setSpeed(15);
+//        mockDrone.startLoiter();
+//        specDrone = mockDrone;
         droneList.add(specDrone);
 
 
