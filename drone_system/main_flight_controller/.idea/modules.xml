@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drone_system-main-flight-controller_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drone_system-main-flight-controller_main.iml" group="main-flight-controller" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drone_system-main-flight-controller_test.iml" filepath="$PROJECT_DIR$/.idea/modules/drone_system-main-flight-controller_test.iml" group="main-flight-controller" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/main-flight-controller.iml" filepath="$PROJECT_DIR$/.idea/modules/main-flight-controller.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/main-flight-controller_main.iml" filepath="$PROJECT_DIR$/.idea/modules/main-flight-controller_main.iml" group="main-flight-controller" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/main-flight-controller_test.iml" filepath="$PROJECT_DIR$/.idea/modules/main-flight-controller_test.iml" group="main-flight-controller" />

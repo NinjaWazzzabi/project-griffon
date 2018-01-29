@@ -5,20 +5,22 @@
 #include "Vector3f.h"
 #include "pid.h"
 
-#define THROTTLE_CH 1
-#define RUDDER_CH 2
-#define ELEVATOR_CH 3
-#define AILERON_CH 4
+#define THROTTLE_CH 0
+#define RUDDER_CH 1
+#define ELEVATOR_CH 2
+#define AILERON_CH 3
 
 #define MAX_SERVO_VALUE 2000
 #define MIN_SERVO_VALUE 1000
+#define SERVO_UPDATE 100
 
 #define ASCII_EOT 4
 #define ASCII_SOH 1
 #define ASCII_ACK 6
 #define UPDATE_DELAY 10
 
-const String desc = "AHRS";
+const String desc = "AHRS,CTRL";
+const unsigned char descLength = 9;
 
 Vector3fClass actual;
 Vector3fClass desired;
@@ -65,7 +67,7 @@ void setup()
 		Serial.flush();
 
 		delay(100);
-		if (Serial.available() > 3)
+		if (Serial.available() >= descLength)
 		{
 			if (Serial.readString().equals(desc))
 			{
@@ -80,7 +82,8 @@ void setup()
 	zPid.setConstants(1, 0, 0);
 
 	//Servos
-	servoController.setPWMFreq(60);
+	servoController.begin();
+	servoController.setPWMFreq(SERVO_UPDATE);
 
 	//Controlvalues
 	throttleValue = 0;
@@ -108,11 +111,11 @@ void loop()
 	//Update the actual
 	imu::Vector<3> vector = ahrs.getVector(Adafruit_BNO055::VECTOR_EULER);
 
-	// vector.y = pitch
-	// vector.z = -roll
+	// vector.y = -pitch
+	// vector.z = roll
 	// vector.x = yaw
-	actual.setX(vector.y());
-	actual.setY(-vector.z());
+	actual.setX(-vector.y());
+	actual.setY(vector.z());
 	actual.setZ(vector.x());
 
 	//Calculate current error
@@ -191,7 +194,7 @@ void parseFlightCommand(char *vector)
 	desired.setX(pitch);
 	desired.setY(roll);
 	desired.setZ(rudder);
-	throttleValue = throttle;
+	throttleValue = throttle * 2 - 100;
 }
 
 //Tested!
@@ -218,9 +221,16 @@ void printFloat(float f)
 id range: 0 to 15
 value range: -100 to 100
 */
+//Tested!
 void setServoValue(int id, int value)
 {
-	//Todo Test with hardware to verify correct behaviour
-	long mappedValue = map(value, -100, 100, MIN_SERVO_VALUE, MAX_SERVO_VALUE);
-	servoController.setPWM(id, 0, value);
+
+	long mappedValue = map(
+		value,
+		-100,
+		100,
+		410,
+		820
+	);
+    servoController.setPin(id, mappedValue);
 }

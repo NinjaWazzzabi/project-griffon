@@ -14,7 +14,7 @@ public class ArduinoFactory {
     private static final byte ASCII_GREATER_THAT = (byte) 62;
     private static final byte ASCII_LESS_THAT = (byte) 60;
 
-    private static final String regex = "(?<=[\\x01])\\w+(?=[\\x04])";
+    private static final String regex = "(?<=[\\x01])[\\w,]+(?=[\\x04])";
 
     @Getter
     private static final ArduinoFactory instance = new ArduinoFactory();

@@ -35,7 +35,7 @@ public class SystemController {
     private Arduino arduino;
     private double[] controlValues = new double[DirectControl.values().length + IndirectControl.values().length];
 
-    SystemController(Arduino arduino) throws IllegalArgumentException {
+    public SystemController(Arduino arduino) throws IllegalArgumentException {
         if (arduino != null && arduino.hasDescription(Descriptions.HAS_SERVO_CONTROL)) {
             this.arduino = arduino;
         } else {
@@ -74,7 +74,7 @@ public class SystemController {
             this.servoChannel = servoChannel;
         }
     }
-    enum DirectControl {
+    public enum DirectControl {
         THROTTLE(0),
         RUDDER(1);
 
