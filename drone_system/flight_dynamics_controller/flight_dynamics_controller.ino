@@ -39,7 +39,7 @@ Adafruit_BNO055 ahrs = Adafruit_BNO055(55); //Attitude heading reference system
 
 #define BUFFER_SIZE 16
 char serialBuffer[BUFFER_SIZE];
-unsigned char bufferIndex;
+unsigned char bufferIndex = 0;
 
 long lastHostAhrsUpdate;
 
@@ -230,7 +230,6 @@ void setServoValue(int id, int value)
 		-100,
 		100,
 		410,
-		820
-	);
+		820);
     servoController.setPin(id, mappedValue);
 }
